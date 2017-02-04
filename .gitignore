@@ -90,5 +90,5 @@ ENV/
 # Rope project settings
 .ropeproject
 
-# sqllite
+# database
 *.sqlite3
