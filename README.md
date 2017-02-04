@@ -3,6 +3,8 @@
 
 Powered by Django REST framework.
 
+> For front-end development visit: https://github.com/techcats/qbotio.github.io
+
 ## Development
 
 See [Django](https://docs.djangoproject.com/) and [Django REST framework](http://www.django-rest-framework.org/) documentations for API usage.
@@ -19,7 +21,7 @@ See [Django](https://docs.djangoproject.com/) and [Django REST framework](http:/
 
 ### Git Setup
 
-1. Clone the git repository: ```$ git clone [url]```
+1. Clone the git repository: ```$ git clone https://github.com/techcats/qabotio-back-end.git```
 
 ### Install/Update python libraries
 1. cd into your local repository folder
