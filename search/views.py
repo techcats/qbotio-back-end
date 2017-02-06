@@ -3,8 +3,10 @@ from rest_framework.response import Response
 from search.models import Result
 from search.serializers import ResultSerializer
 
+
 class ResultList(APIView):
-    def get(self, request):
+
+    def get(self):
         """
         List all results.
         """
