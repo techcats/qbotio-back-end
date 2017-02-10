@@ -45,10 +45,14 @@ Verify by going to http://localhost:8000/.
 
 ## Deployment
 
+Guide for deploying back end service.
+
+## AWS Beanstalk
+
 ### Setup
-1. https://realpython.com/blog/python/deploying-a-django-app-and-postgresql-to-aws-elastic-beanstalk/
-2. https://blog.hashedin.com/2017/01/06/5-gotchas-with-elastic-beanstalk-and-django/
+1. See [guide](https://realpython.com/blog/python/deploying-a-django-app-and-postgresql-to-aws-elastic-beanstalk/)
+2. Modify ALLOWED_HOSTS in web/settings.py to include your Elastic Beanstalk host.
+3. Configure CORS_ORIGIN_WHITELIST in web/settings.py. See [django-cors-headers](https://github.com/ottoyiu/django-cors-headers) for more details.
 
-### CI
-
-Coming soon.
+### Circle CI
+See Gist for setting up [Circle CI configuration](https://gist.github.com/RobertoSchneiders/9e0e73e836a80d53a21e)

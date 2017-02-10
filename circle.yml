@@ -1,0 +1,10 @@
+dependencies:
+  pre:
+    - sudo pip install awsebcli --ignore-installed setuptools
+deployment:
+  production:
+    branch: master
+    commands:
+      - mkdir .elasticbeanstalk
+      - cp resources/circleci/eb/config.yml .elasticbeanstalk/config.yml
+      - eb deploy --profile default

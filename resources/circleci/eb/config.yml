@@ -1,0 +1,10 @@
+branch-defaults:
+  master:
+    environment: qbotio-back-end-dev
+global:
+  application_name: qbotio-back-end
+  default_ec2_keyname: psychobolt-aws-eb
+  default_platform: Python 3.4
+  default_region: us-west-2
+  profile: eb-cli
+  sc: git

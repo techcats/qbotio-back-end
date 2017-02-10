@@ -25,8 +25,12 @@ SECRET_KEY = '26rqx5m#6p7k0a41$wftan2xb#l+!+4+&jhykl+&h1k(2-clki'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'api.qbotio.com',
+    'qbotio.us-west-2.elasticbeanstalk.com'
+]
 
 # Application definition
 
@@ -120,12 +124,13 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'www', 'static')
 STATIC_URL = '/static/'
 
 # CORS Configuration
 CORS_ORIGIN_WHITELIST = [
     'localhost:8080',
     'localhost:8081',
-    'qbotio.com'
+    'qbotio.com',
+    'www.qbotio.com',
 ]

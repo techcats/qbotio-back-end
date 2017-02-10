@@ -6,7 +6,7 @@ from search.serializers import ResultSerializer
 
 class ResultList(APIView):
 
-    def get(self):
+    def get(self, request):
         """
         List all results.
         """
