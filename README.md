@@ -1,4 +1,5 @@
 [![Stories in Ready](https://badge.waffle.io/techcats/qbotio-back-end.png?label=ready&title=Ready)](https://waffle.io/techcats/qbotio-back-end)
+[![Build stats](https://circleci.com/gh/techcats/qbotio-back-end.svg?style=shield&circle-token=0063d363c60c818096169987c5bc7f0a5033eb60)](https://circleci.com/gh/techcats/qbotio-back-end)
 # qbotio-back-end
 
 Powered by Django REST framework.
