@@ -10,7 +10,9 @@ deployment:
     commands:
       - mkdir .elasticbeanstalk
       - cp resources/circleci/eb/config.yml .elasticbeanstalk/config.yml
-      - eb deploy --profile default
+      - py manage.py collectstatic --noinput
+      - git add .
+      - eb deploy --staged
 test:
   override:
     - echo "test"
