@@ -12,6 +12,7 @@ deployment:
       - cp resources/circleci/eb/config.yml .elasticbeanstalk/config.yml
       - python manage.py collectstatic --noinput
       - git add .
+      - bash ./resources/circleci/eb/setup.sh
       - eb deploy --staged
 test:
   override:
