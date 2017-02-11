@@ -1,6 +1,6 @@
 dependencies:
   pre:
-    - sudo pip install awsebcli --ignore-installed setuptools
+    - sudo pip install awsebcli --force-reinstall
 deployment:
   production:
     branch: master
