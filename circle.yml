@@ -11,3 +11,6 @@ deployment:
       - mkdir .elasticbeanstalk
       - cp resources/circleci/eb/config.yml .elasticbeanstalk/config.yml
       - eb deploy --profile default
+test:
+  override:
+    - echo "test"
