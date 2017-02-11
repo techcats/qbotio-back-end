@@ -1,7 +1,9 @@
 dependencies:
   pre:
+    - sudo apt-get update
     - sudo apt-get install python-dev
-    - sudo pip install awsebcli --force-reinstall
+    - sudo python -m pip install -U pip
+    - sudo pip install awsebcli
 deployment:
   production:
     branch: master
