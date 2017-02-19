@@ -114,3 +114,6 @@ bin/
 
 # PyDev specific (Python IDE for Eclipse)
 *.pydevproject
+
+# Mac OS extensions
+*.DS_Store
