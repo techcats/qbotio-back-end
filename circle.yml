@@ -10,6 +10,7 @@ deployment:
     commands:
       - mkdir .elasticbeanstalk
       - cp resources/circleci/eb/config.yml .elasticbeanstalk/config.yml
+      - mkdir etc
       - cp resources/circleci/settings.json etc/
       - python manage.py collectstatic --noinput
       - git add .
