@@ -66,7 +66,7 @@ In the top most directory, create etc/settings.json. Add the following JSON, for
 
 ### Configure Administration
 
-> For now, this is only required once for setup. If db.sqlite3 file exist, delete it: ```$ rm -f tmp.db db.sqlite3```
+> For now, this is only required once for setup. If db.sqlite3 file exist, delete it: ```$ rm -f db.sqlite3```
 
 ```bash
 $ python manage.py makemigrations
