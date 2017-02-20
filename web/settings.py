@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import sys
 import logging
 import json
 import mongoengine
@@ -143,11 +144,12 @@ STATIC_URL = '/static/'
 # CORS Configuration
 CORS_ORIGIN_WHITELIST = JSON_SETTINGS['CORS_ORIGIN_WHITELIST'] or []
 
-defaultDB = JSON_SETTINGS['DATABASES']['repository']
-mongoengine.connect(
-    db=defaultDB['NAME'],
-    username=defaultDB['USER'],
-    password=defaultDB['PASSWORD'],
-    host=defaultDB['HOST'],
-    port=defaultDB['PORT']
-)
+if sys.argv[1] == 'runserver':
+    defaultDB = JSON_SETTINGS['DATABASES']['repository']
+    mongoengine.connect(
+        db=defaultDB['NAME'],
+        username=defaultDB['USER'],
+        password=defaultDB['PASSWORD'],
+        host=defaultDB['HOST'],
+        port=defaultDB['PORT']
+    )

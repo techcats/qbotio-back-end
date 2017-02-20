@@ -10,6 +10,7 @@ deployment:
     commands:
       - mkdir .elasticbeanstalk
       - cp resources/circleci/eb/config.yml .elasticbeanstalk/config.yml
+      - cp resources/circleci/eb/settings.json etc/
       - python manage.py collectstatic --noinput
       - git add .
       - bash ./resources/circleci/eb/setup.sh
@@ -17,3 +18,8 @@ deployment:
 test:
   override:
     - echo "test"
+machine:
+  pre:
+    - cd /opt/circleci/.pyenv; git pull
+  python:
+    version: 3.6.0
