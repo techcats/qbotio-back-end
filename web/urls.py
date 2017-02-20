@@ -15,9 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from rest_framework_mongoengine.routers import DefaultRouter
+from search.views import ResultsViewSet
+
+router = DefaultRouter()
+router.register(r'search', ResultsViewSet)
 
 urlpatterns = [
-    url(r'^search/', include('search.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'', include('status.urls')),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^', include(router.urls))
 ]

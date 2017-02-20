@@ -1,4 +1,4 @@
-from django.db import models
+from mongoengine import Document, fields
 
-class Result(models.Model):
-    answer = models.TextField()
+class Result(Document):
+    answer = fields.StringField(required=True)

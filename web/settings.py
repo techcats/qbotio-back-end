@@ -11,26 +11,39 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import logging
+import json
+import mongoengine
+
+# Init logger
+logger = logging.getLogger('qbotio-back-end.web')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Read etc/settings.json
+try:
+    if 'QBOTIO_SETTINGS_PATH' in os.environ:
+         qbotio_settings_path_env = os.environ['QBOTIO_SETTINGS_PATH']
+         json_settings_path = f'{qbotio_settings_path_env}/settings.json'
+    else:
+        json_settings_path = f'{BASE_DIR}/etc/settings.json'
+    with open(json_settings_path) as json_settings:
+        JSON_SETTINGS = json.load(json_settings)
+except:
+    logger.error(f'Unable to read {json_settings_path}')
+    exit()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '26rqx5m#6p7k0a41$wftan2xb#l+!+4+&jhykl+&h1k(2-clki'
+SECRET_KEY = JSON_SETTINGS['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'api.qbotio.com',
-    'qbotio.us-west-2.elasticbeanstalk.com'
-]
+ALLOWED_HOSTS = JSON_SETTINGS['ALLOWED_HOSTS'] or []
 
 # Application definition
 
@@ -84,7 +97,7 @@ WSGI_APPLICATION = 'web.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': JSON_SETTINGS['DATABASES']['default']['NAME'] or os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -128,9 +141,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'www', 'static')
 STATIC_URL = '/static/'
 
 # CORS Configuration
-CORS_ORIGIN_WHITELIST = [
-    'localhost:8080',
-    'localhost:8081',
-    'qbotio.com',
-    'www.qbotio.com',
-]
+CORS_ORIGIN_WHITELIST = JSON_SETTINGS['CORS_ORIGIN_WHITELIST'] or []
+
+defaultDB = JSON_SETTINGS['DATABASES']['repository']
+mongoengine.connect(
+    db=defaultDB['NAME'],
+    username=defaultDB['USER'],
+    password=defaultDB['PASSWORD'],
+    host=defaultDB['HOST'],
+    port=defaultDB['PORT']
+)

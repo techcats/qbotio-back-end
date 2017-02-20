@@ -1,7 +1,7 @@
-from rest_framework import serializers
+from rest_framework_mongoengine import serializers
 from search.models import Result
 
-class ResultSerializer(serializers.ModelSerializer):
+class ResultSerializer(serializers.DocumentSerializer):
     class Meta:
         model = Result
-        fields = ('id', 'answer')
+        fields = '__all__'

@@ -117,3 +117,9 @@ bin/
 
 # Mac OS extensions
 *.DS_Store
+
+# Etc folder
+etc
+
+# VSCode
+.vscode

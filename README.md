@@ -34,7 +34,45 @@ You should now be at the root directory of 'qbotio-back-end/'. Calling ```$ work
 
 Run ```(qbotio) $ pip install -r requirements.txt```
 
-> To include a new library use ```$ pip install [package] && freeze > requirements.txt```
+> To include a new library use ```(qbotio) $ pip install [package]```, and then ```(qbotio) $ pip freeze > requirements.txt```
+
+### Configure settings.json
+
+In the top most directory, create etc/settings.json. Add the following JSON, for example:
+```json
+{
+  "SECRET_KEY": "secret",
+  "ALLOWED_HOSTS": [
+    "localhost",
+    "127.0.0.1",
+    "api.qbotio.com",
+    "qbotio.us-west-2.elasticbeanstalk.com"
+  ],
+  "DATABASES" : {
+    "default": {
+      "NAME" : "F:\\github\\qbotio-back-end\\db.sqlite3"
+    },
+    "repository": {
+        "ENGINE": "django_mongodb_engine",
+        "NAME": "qbotio",
+        "USER": "admin",
+        "PASSWORD": "admin",
+        "HOST": "localhost",
+        "PORT": 27017
+    }
+  }
+}
+```
+
+### Configure Administration
+
+> For now, this is only required once for setup. If db.sqlite3 file exist, delete it: ```$ rm -f tmp.db db.sqlite3```
+
+```bash
+$ python manage.py makemigrations
+$ python manage.py migrate
+$ python manage.py createsuperuser
+```
 
 ### Test Locally
 
@@ -51,9 +89,13 @@ Guide for deploying back end service.
 ## AWS Beanstalk
 
 ### Setup
-1. See [guide](https://realpython.com/blog/python/deploying-a-django-app-and-postgresql-to-aws-elastic-beanstalk/)
-2. Modify ALLOWED_HOSTS in web/settings.py to include your Elastic Beanstalk host.
-3. Configure CORS_ORIGIN_WHITELIST in web/settings.py. See [django-cors-headers](https://github.com/ottoyiu/django-cors-headers) for more details.
+
+> See [guide](https://realpython.com/blog/python/deploying-a-django-app-and-postgresql-to-aws-elastic-beanstalk/)
+
+#### Configure environment variables
+
+1. Create setting.json and upload it to your S3 bucket associated to your Elastic Beanstalk instance
+2. Modifiy .ebextentions/environment.config to use the bucket
 
 ### Circle CI
 See Gist for setting up [Circle CI configuration](https://gist.github.com/RobertoSchneiders/9e0e73e836a80d53a21e)
