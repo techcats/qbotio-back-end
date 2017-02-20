@@ -17,7 +17,7 @@ import json
 import mongoengine
 
 # Init logger
-logger = logging.getLogger('qbotio-back-end.web')
+logger = logging.getLogger(__name__)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -144,6 +144,7 @@ STATIC_URL = '/static/'
 # CORS Configuration
 CORS_ORIGIN_WHITELIST = JSON_SETTINGS['CORS_ORIGIN_WHITELIST'] or []
 
+# MongoDB Connection
 if sys.argv[1] == 'runserver':
     defaultDB = JSON_SETTINGS['DATABASES']['repository']
     mongoengine.connect(
@@ -153,3 +154,42 @@ if sys.argv[1] == 'runserver':
         host=defaultDB['HOST'],
         port=defaultDB['PORT']
     )
+
+# Log Configuration
+LOGGING = {
+    'version': 1,
+    'formatters': {
+        'verbose': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'server.log',
+            'formatter': 'simple'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    }
+}
+
+if DEBUG:
+    # make all loggers use the console.
+    for logger in LOGGING['loggers']:
+        LOGGING['loggers'][logger]['handlers'] = ['console']
