@@ -20,5 +20,6 @@ deployment:
 test:
   override:
     - echo "test"
+machine:
   python:
     version: 3.4.3
