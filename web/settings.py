@@ -27,6 +27,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 patch_environment()
 
 # Read etc/settings.json
+PRODUCTION = False
 try:
     if 'QBOTIO_SETTINGS_PATH' in os.environ:
          qbotio_settings_path_env = os.environ['QBOTIO_SETTINGS_PATH']
@@ -36,10 +37,11 @@ try:
     with open(json_settings_path) as json_settings:
         JSON_SETTINGS = json.load(json_settings)
         if ('PRODUCTION' in JSON_SETTINGS):
+            PRODUCTION = True
             PRODUCTION_SETTINGS = JSON_SETTINGS['PRODUCTION']
 except:
     logger.error('Unable to read {}'.format(json_settings_path))
-    # exit()
+    exit()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -159,7 +161,7 @@ if ('repository' in JSON_SETTINGS['DATABASES']):
     )
 
 # Configure Server Error reporting (used in production)
-if (PRODUCTION_SETTINGS):
+if (PRODUCTION):
     ADMINS = PRODUCTION_SETTINGS['ADMINS']
     SERVER_EMAIL = PRODUCTION_SETTINGS['SERVER_EMAIL']
     EMAIL_HOST = PRODUCTION_SETTINGS['EMAIL_HOST']
