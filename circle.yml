@@ -15,12 +15,10 @@ deployment:
       - python manage.py collectstatic --noinput
       - git add .
       - bash ./resources/circleci/eb/setup.sh
+      - eb setenv QBOTIO_SETTINGS_PATH=/usr/local/share/qbotio-back-end
       - eb deploy --staged
 test:
   override:
     - echo "test"
-machine:
-  pre:
-    - cd /opt/circleci/.pyenv; git pull
   python:
-    version: 3.6.0
+    version: 3.4.3

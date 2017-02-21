@@ -42,14 +42,10 @@ In the top most directory, create etc/settings.json. Add the following JSON, for
 ```json
 {
   "SECRET_KEY": "secret",
-  "ALLOWED_HOSTS": [
-    "localhost",
-    "127.0.0.1",
-    "api.qbotio.com",
-    "qbotio.us-west-2.elasticbeanstalk.com"
-  ],
+  "ALLOWED_HOSTS": [],
   "DATABASES" : {
     "default": {
+      "ENGINE": "django.db.backends.sqlite3",
       "NAME" : "F:\\github\\qbotio-back-end\\db.sqlite3"
     },
     "repository": {
@@ -60,7 +56,10 @@ In the top most directory, create etc/settings.json. Add the following JSON, for
         "HOST": "localhost",
         "PORT": 27017
     }
-  }
+  },
+  "CORS_ORIGIN_WHITELIST" : [
+    "localhost:8080"
+  ]
 }
 ```
 
@@ -95,7 +94,7 @@ Guide for deploying back end service.
 #### Configure environment variables
 
 1. Create setting.json and upload it to your S3 bucket associated to your Elastic Beanstalk instance
-2. Modifiy .ebextentions/environment.config to use the bucket
+2. Modifiy .ebextentions/*.config to use the bucket
 
 ### Circle CI
 See Gist for setting up [Circle CI configuration](https://gist.github.com/RobertoSchneiders/9e0e73e836a80d53a21e)

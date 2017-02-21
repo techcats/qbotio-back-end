@@ -15,6 +15,7 @@ import sys
 import logging
 import json
 import mongoengine
+from resources.circleci.eb.get_eb_env import patch_environment
 
 # Init logger
 logger = logging.getLogger(__name__)
@@ -22,18 +23,23 @@ logger = logging.getLogger(__name__)
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Patch environment variables
+patch_environment()
+
 # Read etc/settings.json
 try:
     if 'QBOTIO_SETTINGS_PATH' in os.environ:
          qbotio_settings_path_env = os.environ['QBOTIO_SETTINGS_PATH']
-         json_settings_path = f'{qbotio_settings_path_env}/settings.json'
+         json_settings_path = '{}/settings.json'.format(qbotio_settings_path_env)
     else:
-        json_settings_path = f'{BASE_DIR}/etc/settings.json'
+        json_settings_path = '{}/etc/settings.json'.format(BASE_DIR)
     with open(json_settings_path) as json_settings:
         JSON_SETTINGS = json.load(json_settings)
+        if ('PRODUCTION' in JSON_SETTINGS):
+            PRODUCTION_SETTINGS = JSON_SETTINGS['PRODUCTION']
 except:
-    logger.error(f'Unable to read {json_settings_path}')
-    exit()
+    logger.error('Unable to read {}'.format(json_settings_path))
+    # exit()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -42,9 +48,9 @@ except:
 SECRET_KEY = JSON_SETTINGS['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = 'PRODUCTION' not in JSON_SETTINGS
 
-ALLOWED_HOSTS = JSON_SETTINGS['ALLOWED_HOSTS'] or []
+ALLOWED_HOSTS = JSON_SETTINGS['ALLOWED_HOSTS']
 
 # Application definition
 
@@ -96,10 +102,7 @@ WSGI_APPLICATION = 'web.wsgi.application'
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': JSON_SETTINGS['DATABASES']['default']['NAME'] or os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': JSON_SETTINGS['DATABASES']['default']
 }
 
 
@@ -142,10 +145,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'www', 'static')
 STATIC_URL = '/static/'
 
 # CORS Configuration
-CORS_ORIGIN_WHITELIST = JSON_SETTINGS['CORS_ORIGIN_WHITELIST'] or []
+CORS_ORIGIN_WHITELIST = JSON_SETTINGS['CORS_ORIGIN_WHITELIST']
 
 # MongoDB Connection
-if sys.argv[1] == 'runserver':
+if ('repository' in JSON_SETTINGS['DATABASES']):
     defaultDB = JSON_SETTINGS['DATABASES']['repository']
     mongoengine.connect(
         db=defaultDB['NAME'],
@@ -155,41 +158,11 @@ if sys.argv[1] == 'runserver':
         port=defaultDB['PORT']
     )
 
-# Log Configuration
-LOGGING = {
-    'version': 1,
-    'formatters': {
-        'verbose': {
-            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
-            'datefmt' : "%d/%b/%Y %H:%M:%S"
-        },
-        'simple': {
-            'format': '%(levelname)s %(message)s'
-        },
-    },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple'
-        },
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'server.log',
-            'formatter': 'simple'
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    }
-}
-
-if DEBUG:
-    # make all loggers use the console.
-    for logger in LOGGING['loggers']:
-        LOGGING['loggers'][logger]['handlers'] = ['console']
+Configure Server Error reporting (used in production)
+if (PRODUCTION_SETTINGS):
+    ADMINS = PRODUCTION_SETTINGS['ADMINS']
+    SERVER_EMAIL = PRODUCTION_SETTINGS['SERVER_EMAIL']
+    EMAIL_HOST = PRODUCTION_SETTINGS['EMAIL_HOST']
+    EMAIL_HOST_USER = PRODUCTION_SETTINGS['EMAIL_HOST_USER']
+    EMAIL_HOST_PASSWORD = PRODUCTION_SETTINGS['EMAIL_HOST_PASSWORD']
+    EMAIL_USE_TLS = PRODUCTION_SETTINGS['EMAIL_USE_TLS']

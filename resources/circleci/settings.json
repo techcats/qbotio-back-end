@@ -3,15 +3,8 @@
   "ALLOWED_HOSTS": [],
   "DATABASES" : {
     "default": {
+      "ENGINE": "django.db.backends.sqlite3",
       "NAME" : "db.sqlite3"
-    },
-    "repository": {
-        "ENGINE": "django_mongodb_engine",
-        "NAME": "qbotio",
-        "USER": "admin",
-        "PASSWORD": "admin",
-        "HOST": "localhost",
-        "PORT": 27017
     }
   },
   "CORS_ORIGIN_WHITELIST" : []
