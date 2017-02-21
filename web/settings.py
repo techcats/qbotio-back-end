@@ -158,7 +158,7 @@ if ('repository' in JSON_SETTINGS['DATABASES']):
         port=defaultDB['PORT']
     )
 
-Configure Server Error reporting (used in production)
+# Configure Server Error reporting (used in production)
 if (PRODUCTION_SETTINGS):
     ADMINS = PRODUCTION_SETTINGS['ADMINS']
     SERVER_EMAIL = PRODUCTION_SETTINGS['SERVER_EMAIL']
