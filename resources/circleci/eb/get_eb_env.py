@@ -9,6 +9,9 @@ def patch_environment(path=ENV_PATH):
     Patch the current environment, os.environ, with the contents of the specified environment file.
     http://stackoverflow.com/questions/40769947/django-doesnt-see-environment-variables-when-deployed-to-elastic-beanstalk
     """
+    if not os.path.isdir(ENV_PATH):
+        return
+
     # mostly pulled from a very useful snippet: http://stackoverflow.com/a/3505826/504550
     command = ['bash', '-c', 'source {path} && env'.format(path=path)]
 
@@ -20,3 +23,4 @@ def patch_environment(path=ENV_PATH):
     for line in proc_stdout.splitlines():
         (key, _, value) = line.partition("=")
         os.environ[key] = value
+        

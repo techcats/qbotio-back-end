@@ -22,7 +22,7 @@ See [Django](https://docs.djangoproject.com/) and [Django REST framework](http:/
 3. Install virtualenv: ```$ pip install virtualenv```
 4. Install virtualenvwrapper. Follow and see usage with [Windows](https://pypi.python.org/pypi/virtualenvwrapper-win), [Linux & Mac](https://virtualenvwrapper.readthedocs.io/en/stable/) guides.
 6. Create (```$ mkvirtualenv qbotio```) and work (```$ workon qbotio```) on a local environment using virtualenvwrapper.
-7. Set the default project directory: ```(qbotio) $ setvirtualenvproject <path to cloned repo>``` or use ```setprojectdir``` (Windows)
+7. Set the default project directory: ```(qbotio) $ setvirtualenvproject $VIRTUAL_ENV <path to cloned repo>``` (Linux & Mac) or use ```setprojectdir <path to cloned repo>``` (Windows)
 8. ```(qbotio) $ deactivate```
 9. ```$ workon qbotio```
 
