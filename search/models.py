@@ -1,5 +1,9 @@
 from mongoengine import Document, fields
 
-class Result(Document):
-    answer = fields.StringField(required=True)
-    pub_date = fields.DateTimeField('date published')
+class Answer(Document):
+    """
+    Model for a Question Answer
+    """
+    value = fields.StringField(required=True)
+    origin = fields.StringField()
+    source = fields.StringField(required=True)

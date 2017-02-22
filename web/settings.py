@@ -66,7 +66,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'search.apps.SearchConfig',
-    'haystack',
 ]
 
 MIDDLEWARE = [
@@ -170,11 +169,5 @@ if (PRODUCTION):
     EMAIL_HOST_PASSWORD = PRODUCTION_SETTINGS['EMAIL_HOST_PASSWORD']
     EMAIL_USE_TLS = PRODUCTION_SETTINGS['EMAIL_USE_TLS']
 
-# Configure lasticsearch
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://elastic.qbotio.com',
-        'INDEX_NAME': 'qbotio',
-    }
-}
+# Disables require slash after requests
+APPEND_SLASH=False

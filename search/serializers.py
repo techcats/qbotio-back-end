@@ -1,10 +1,10 @@
-from rest_framework_mongoengine import serializers
-from search.models import Result
+from rest_framework_mongoengine.serializers import DocumentSerializer
+from search.models import Answer
 
-class ResultSerializer(serializers.DocumentSerializer):
+class ResultSerializer(DocumentSerializer):
     """
-    Serializer for Result model
+    Serializes results
     """
     class Meta:
-        model = Result
+        model = Answer
         fields = '__all__'

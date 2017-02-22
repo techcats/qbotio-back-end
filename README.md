@@ -12,8 +12,7 @@ See [Django](https://docs.djangoproject.com/) and [Django REST framework](http:/
 
 ### Git Setup
 
-1. Clone the git repository: ```$ git clone https://github.com/techcats/qbotio-back-end.git```
-
+Clone the git repository: ```$ git clone https://github.com/techcats/qbotio-back-end.git```
 
 ### Environment Setup
 
