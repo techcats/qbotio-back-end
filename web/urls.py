@@ -15,14 +15,28 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from rest_framework_mongoengine.routers import DefaultRouter
-from search.views import ResultsViewSet
+from rest_framework_mongoengine import routers
+from search.urls import searchRouter
 
-router = DefaultRouter()
-router.register(r'search', ResultsViewSet)
+class DefaultRouter(routers.DefaultRouter):
+    """
+    Extends `DefaultRouter` class to add a method for extending url routes from another router.
+    http://stackoverflow.com/questions/31483282/django-rest-framework-combining-routers-from-different-apps
+    """
+    def extend(self, router):
+        """
+        Extend the routes with url routes of the passed in router.
+
+        Args:
+             router: SimpleRouter instance containing route definitions.
+        """
+        self.registry.extend(router.registry)
+
+ROUTER = DefaultRouter()
+ROUTER.extend(searchRouter)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^', include(router.urls))
+    url(r'^', include(ROUTER.urls)),
 ]

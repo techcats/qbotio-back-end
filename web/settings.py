@@ -171,3 +171,6 @@ if (PRODUCTION):
 
 # Disables require slash after requests
 APPEND_SLASH=False
+
+# Elastic search config
+ELASTICSEARCH = JSON_SETTINGS['ELASTICSEARCH']
