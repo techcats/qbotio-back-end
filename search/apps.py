@@ -4,9 +4,12 @@ from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
 
 es_settings = settings.ELASTICSEARCH
+es_http_auth = None
+if 'USER' in es_settings:
+    es_http_auth = (es_settings['USER'], es_settings['PASSWORD'])
 es_search = Search(using=Elasticsearch(
     [es_settings['HOST']],
-    http_auth=(es_settings['USER'], es_settings['PASSWORD']),
+    http_auth=es_http_auth,
     port=es_settings['PORT'],
 ), index='qbotio')
 

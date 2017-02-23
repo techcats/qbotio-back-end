@@ -7,5 +7,12 @@
       "NAME" : "db.sqlite3"
     }
   },
-  "CORS_ORIGIN_WHITELIST" : []
+  "CORS_ORIGIN_WHITELIST" : [],
+  "ELASTICSEARCH": {
+    "HOST": "localhost",
+    "PORT": 9200,
+    "USER": "elastic",
+    "PASSWORD": "elastic",
+    "INDEX": "default"
+  }
 }
