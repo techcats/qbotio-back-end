@@ -1,9 +1,14 @@
 from django.conf.urls import url
-from . import views
-from rest_framework_mongoengine.routers import SimpleRouter
+import rest_framework
+import rest_framework_mongoengine
 
-searchRouter = SimpleRouter()
-searchRouter.register(r'search', views.ResultsViewSet)
+from . import views
+
+searchRouter = rest_framework.routers.SimpleRouter()
+searchRouter.register(r'search', views.SearchView, base_name='search-list')
+
+answerRouter = rest_framework_mongoengine.routers.SimpleRouter()
+answerRouter.register(r'answer', views.AnswerView)
 
 urlpatterns = [
 ]

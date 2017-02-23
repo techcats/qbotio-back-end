@@ -1,44 +1,22 @@
-from rest_framework_mongoengine.viewsets import ModelViewSet
-import rest_framework_mongoengine.serializers
+from rest_framework_mongoengine.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.mixins import ListModelMixin
+from django.core import serializers
 from elasticsearch_dsl.query import Match
-from search.models import Answer
-from search.serializers import ResultSerializer
+from search.models import Answer, Result
+from search.serializers import AnswerSerializer, ResultSerializer
 from .apps import es_search
+import pprint
 
-class ResultsViewSet(ModelViewSet):
+class AnswerView(ModelViewSet):
     """
-    View answers
+    Private API for viewing and updating answers
     """
     queryset = Answer.objects.all()
-    serializer_class = ResultSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
-    def list(self, request):
-        """
-        Returns a list of answers from a string query
-        """
-        query = request.GET.get('q', '')
-        if query == '':
-            # Return all unrank results
-            serializer = self.get_serializer(Answer.objects.all(), many=True)
-        else:
-            # https://elasticsearch-dsl.readthedocs.io/en/latest/search_dsl.html
-            # https://www.elastic.co/guide/en/elasticsearch/reference/current/full-text-queries.html
-            query = es_search.query(Match(value={'query': query}))[0:10]
-            response = query.execute()
-            print(query.to_dict())
-            print(response.to_dict())
-            # Dummy answers
-            results = [
-                Answer(value="Answer 1"),
-                Answer(value="Answer 2"),
-                Answer(value="Answer 3"),
-            ]
-            serializer = self.get_serializer(results, many=True)
-        return Response(serializer.data)
+    serializer_class = AnswerSerializer
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         """
@@ -54,3 +32,37 @@ class ResultsViewSet(ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+class SearchView(GenericViewSet):
+    """
+    Public API for searching for answers
+    """
+    serializer_class = ResultSerializer
+
+    def get_queryset(self):
+        if 'q' in self.request.GET:
+            query = self.request.GET.get('q', '')
+            # https://elasticsearch-dsl.readthedocs.io/en/latest/search_dsl.html
+            # https://www.elastic.co/guide/en/elasticsearch/reference/current/full-text-queries.html
+            if query == '':
+                query = es_search.query()[0:10]
+            else:
+                query = es_search.query(Match(value={'query': query}))[0:10]
+            response = query.execute()
+            pprint.pprint(query.to_dict()) # debug query
+            return [
+                Result(
+                  hit.value, 
+                  hit.source, 
+                  hit.origin,
+                  hit.meta.score
+                )
+                for hit in response
+            ]
+        return []
+
+    def list(self, request):
+        """
+        Returns a list of answers from a string query
+        """
+        serializer = self.get_serializer(self.get_queryset(), many=True)
+        return Response(serializer.data)

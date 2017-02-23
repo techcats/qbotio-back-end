@@ -58,7 +58,14 @@ In the top most directory, create etc/settings.json. Add the following JSON, for
   },
   "CORS_ORIGIN_WHITELIST" : [
     "localhost:8080"
-  ]
+  ],
+  "ELASTICSEARCH": {
+    "HOST": "localhost",
+    "PORT": 9200,
+    "USER": "elastic",
+    "PASSWORD": "elastic",
+    "INDEX": "default"
+  }
 }
 ```
 
