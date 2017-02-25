@@ -9,6 +9,8 @@ from search.models import Answer, Result
 from search.serializers import AnswerSerializer, ResultSerializer
 from .apps import es_search
 import pprint
+import nltk
+import string
 
 class AnswerView(ModelViewSet):
     """
@@ -43,16 +45,27 @@ class SearchView(GenericViewSet):
             query = self.request.GET.get('q', '')
             # https://elasticsearch-dsl.readthedocs.io/en/latest/search_dsl.html
             # https://www.elastic.co/guide/en/elasticsearch/reference/current/full-text-queries.html
+
+            tokens = nltk.word_tokenize(query)
+            pprint.pprint(tokens)
+            stopwords = nltk.corpus.stopwords.words('english')
+            nltk_query = list(set(tokens) - set(stopwords))
+            pprint.pprint(nltk_query)
+
+            q_nlth = ' '.join(nltk_query)
+            pprint.pprint(q_nlth)
+
             if query == '':
                 query = es_search.query()[0:10]
             else:
-                query = es_search.query(Match(value={'query': query}))[0:10]
+                query = es_search.query(Match(value={'query': q_nlth}))[0:10]
             response = query.execute()
+
             pprint.pprint(query.to_dict()) # debug query
             return [
                 Result(
-                  hit.value, 
-                  hit.source, 
+                  hit.value,
+                  hit.source,
                   hit.origin,
                   hit.meta.score
                 )
