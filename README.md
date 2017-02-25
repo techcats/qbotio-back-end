@@ -35,6 +35,13 @@ Run ```(qbotio) $ pip install -r requirements.txt```
 
 > To include a new library use ```(qbotio) $ pip install [package]```, and then ```(qbotio) $ pip freeze > requirements.txt```
 
+### Install NLTK Data
+
+```bash
+python -m nltk.downloader stopwords
+python -m nltk.downloader punkt
+```
+
 ### Configure settings.json
 
 In the top most directory, create etc/settings.json. Add the following JSON, for example:
