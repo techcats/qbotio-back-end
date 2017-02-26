@@ -1,15 +1,13 @@
+import pprint
+import re
+import nltk
 from rest_framework_mongoengine.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.mixins import ListModelMixin
-from django.core import serializers
 from search.models import Answer, Result
 from search.serializers import AnswerSerializer, ResultSerializer
 from .apps import es_search
-import pprint
-import nltk
-import string
 
 class AnswerView(ModelViewSet):
     """
@@ -33,6 +31,9 @@ class AnswerView(ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+
+ESCAPE_RE = re.compile(r'([+-=&|><(){}[\]\^"~\?:\\\/])')
+
 class SearchView(GenericViewSet):
     """
     Public API for searching for answers
@@ -42,8 +43,8 @@ class SearchView(GenericViewSet):
     def get_queryset(self):
         if 'q' in self.request.GET:
             query = self.request.GET.get('q', '')
-            # https://elasticsearch-dsl.readthedocs.io/en/latest/search_dsl.html
-            # https://www.elastic.co/guide/en/elasticsearch/reference/current/full-text-queries.html
+            # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_reserved_characters
+            query = ESCAPE_RE.sub(r'\\\1', query)
 
             q_nltk = ''
             if 'passthrough' not in self.request.GET:
@@ -56,6 +57,8 @@ class SearchView(GenericViewSet):
                 q_nltk = ' '.join(nltk_query)
                 pprint.pprint(q_nltk)
 
+            # https://elasticsearch-dsl.readthedocs.io/en/latest/search_dsl.html
+            # https://www.elastic.co/guide/en/elasticsearch/reference/current/full-text-queries.html
             if q_nltk:
                 query = es_search.query('query_string', query=q_nltk)[0:10]
             else:
@@ -66,10 +69,10 @@ class SearchView(GenericViewSet):
             pprint.pprint(query.to_dict()) # debug query
             return [
                 Result(
-                  hit.value,
-                  hit.source,
-                  hit.origin,
-                  hit.meta.score
+                    hit.value,
+                    hit.source,
+                    hit.origin,
+                    hit.meta.score
                 )
                 for hit in response
             ]
