@@ -56,13 +56,10 @@ class SearchView(GenericViewSet):
                 q_nltk = ' '.join(nltk_query)
                 pprint.pprint(q_nltk)
 
-            if query == '':
-                query = es_search.query()[0:10]
+            if q_nltk:
+                query = es_search.query('query_string', query=q_nltk)[0:10]
             else:
-                if q_nltk:
-                    query = es_search.query('query_string', query=q_nltk)
-                else:
-                    query = es_search.query('query_string', query=query)
+                query = es_search.query('query_string', query=query)[0:10]
 
             response = query.execute(ignore_cache=False)
 
