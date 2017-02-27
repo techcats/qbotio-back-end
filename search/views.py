@@ -68,10 +68,7 @@ class SearchView(GenericViewSet):
                 pprint.pprint(q_nltk)
 
             #test spell
-
-
-            pprint.pprint(d.check('bubble'))
-
+            
             # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_reserved_characters
             if q_nltk:
                 query = ESCAPE_RE.sub(r'\\\1', q_nltk)
