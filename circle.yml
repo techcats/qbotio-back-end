@@ -1,5 +1,5 @@
 dependencies:
-  pre:
+  pre:      
     - sudo apt-get update
     - sudo apt-get install python-dev
     - sudo python -m pip install -U pip
@@ -21,5 +21,7 @@ test:
   override:
     - echo "test"
 machine:
+  pre:
+    - cd /opt/circleci/.pyenv; git pull    
   python:
     version: 3.4.3
