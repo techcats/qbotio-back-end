@@ -47,7 +47,7 @@ class SearchView(GenericViewSet):
             query = self.request.GET.get('q', '')
 
             q_nltk = ''
-            d = enchant.Dict('en_US')
+            #d = enchant.Dict('en_US')
             q_m = ['?']
 
             if 'passthrough' not in self.request.GET:
