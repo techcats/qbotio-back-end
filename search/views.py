@@ -1,7 +1,7 @@
 import pprint
 import re
 import nltk
-import enchant
+#import enchant
 from rest_framework_mongoengine.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import status
 from rest_framework.response import Response
@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from search.models import Answer, Result
 from search.serializers import AnswerSerializer, ResultSerializer
 from .apps import es_search
-from enchant.checker import SpellChecker
+#from enchant.checker import SpellChecker
 
 
 class AnswerView(ModelViewSet):
@@ -48,7 +48,7 @@ class SearchView(GenericViewSet):
             query = self.request.GET.get('q', '')
 
             q_nltk = ''
-            d = enchant.Dict('en_US')
+            #d = enchant.Dict('en_US')
             symbol_set = ['?', '.']
 
             if 'passthrough' not in self.request.GET:
@@ -59,10 +59,10 @@ class SearchView(GenericViewSet):
                 nltk_query = list(set(nltk_query) - set(symbol_set))
                 q_nltk = ' '.join(nltk_query)
                 #spell check
-                chkr = SpellChecker("en_US", q_nltk)
-                for err in chkr:
-                    pprint.pprint(err.word + "<---- spell error , suggest: ")
-                    pprint.pprint(d.suggest(err.word))
+                #chkr = SpellChecker("en_US", q_nltk)
+                #for err in chkr:
+                #    pprint.pprint(err.word + "<---- spell error , suggest: ")
+                #    pprint.pprint(d.suggest(err.word))
 
                 pprint.pprint(q_nltk)
 
