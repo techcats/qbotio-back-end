@@ -1,6 +1,7 @@
 import pprint
 import re
 import nltk
+#import enchant
 from rest_framework_mongoengine.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import status
 from rest_framework.response import Response
@@ -8,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from search.models import Answer, Result
 from search.serializers import AnswerSerializer, ResultSerializer
 from .apps import es_search
+
 
 class AnswerView(ModelViewSet):
     """
@@ -45,15 +47,30 @@ class SearchView(GenericViewSet):
             query = self.request.GET.get('q', '')
 
             q_nltk = ''
+            d = enchant.Dict('en_US')
+            q_m = ['?']
+
             if 'passthrough' not in self.request.GET:
                 tokens = nltk.word_tokenize(query)
                 pprint.pprint(tokens)
                 stopwords = nltk.corpus.stopwords.words('english')
                 nltk_query = list(set(tokens) - set(stopwords))
+                nltk_query = list(set(nltk_query) - set(q_m))
                 pprint.pprint(nltk_query)
+
+                #check spell
+                #for query in nltk_query :
+                    #pprint.pprint(query)
+                    #pprint.pprint(d.check('query'))
+
 
                 q_nltk = ' '.join(nltk_query)
                 pprint.pprint(q_nltk)
+
+            #test spell
+
+
+            pprint.pprint(d.check('bubble'))
 
             # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_reserved_characters
             if q_nltk:
