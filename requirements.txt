@@ -14,6 +14,7 @@ mongoengine==0.11.0
 nltk==3.2.2
 numpy==1.12.0
 packaging==16.8
+pyenchant==1.6.8
 pylint==1.6.5
 pylint-django==0.7.2
 pylint-plugin-utils==0.2.4
