@@ -9,6 +9,8 @@ from rest_framework.permissions import IsAuthenticated
 from search.models import Answer, Result
 from search.serializers import AnswerSerializer, ResultSerializer
 from .apps import es_search
+from elasticsearch_dsl.query import Match
+from elasticsearch_dsl import Q
 #from enchant.checker import SpellChecker
 
 
@@ -43,6 +45,7 @@ class SearchView(GenericViewSet):
     """
     serializer_class = ResultSerializer
 
+
     def get_queryset(self):
         if 'q' in self.request.GET:
             query = self.request.GET.get('q', '')
@@ -51,12 +54,15 @@ class SearchView(GenericViewSet):
             #d = enchant.Dict('en_US')
             symbol_set = ['?', '.']
 
+            size_nltk_q=0
+
             if 'passthrough' not in self.request.GET:
                 tokens = nltk.word_tokenize(query)
                 pprint.pprint(tokens)
                 stopwords = nltk.corpus.stopwords.words('english')
                 nltk_query = list(set(tokens) - set(stopwords))
                 nltk_query = list(set(nltk_query) - set(symbol_set))
+                size_nltk_q = len(nltk_query) #will use this for weight calculation
                 q_nltk = ' '.join(nltk_query)
                 #spell check
                 #chkr = SpellChecker("en_US", q_nltk)
@@ -65,6 +71,7 @@ class SearchView(GenericViewSet):
                 #    pprint.pprint(d.suggest(err.word))
 
                 pprint.pprint(q_nltk)
+                pprint.pprint(size_nltk_q)
 
             #test spell
 
@@ -76,8 +83,9 @@ class SearchView(GenericViewSet):
 
             # https://elasticsearch-dsl.readthedocs.io/en/latest/search_dsl.html
             # https://www.elastic.co/guide/en/elasticsearch/reference/current/full-text-queries.html
-            query = es_search.query('query_string', query=query)[0:10]
 
+            query = Q({"bool" : {"must" : {"match" : {"value" : {"query" : query}}}}})
+            query = es_search.query(query)[0:10]
             response = query.execute(ignore_cache=False)
 
             pprint.pprint(query.to_dict()) # debug query
