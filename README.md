@@ -38,9 +38,10 @@ Run ```(qbotio) $ pip install -r requirements.txt```
 ### Install NLTK Data
 
 ```bash
-python -m nltk.downloader stopwords
-python -m nltk.downloader punkt
+python resources/nltk_download.py
 ```
+
+> Modify script to add additional corpuses
 
 ### Configure settings.json
 
