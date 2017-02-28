@@ -7,6 +7,7 @@ class Answer(Document):
     value = fields.StringField(required=True)
     origin = fields.StringField()
     source = fields.StringField(required=True)
+    tags = fields.ListField()
 
 class Result:
 
