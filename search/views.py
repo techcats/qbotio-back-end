@@ -55,8 +55,12 @@ class SearchView(GenericViewSet):
             symbol_set = ['?', '.']
 
             size_nltk_q=0
-
+            definition_q=False
+            
             if 'passthrough' not in self.request.GET:
+                if 'what' in query: 
+                    definition_q = True
+			
                 tokens = nltk.word_tokenize(query)
                 pprint.pprint(tokens)
                 stopwords = nltk.corpus.stopwords.words('english')
@@ -78,7 +82,9 @@ class SearchView(GenericViewSet):
             # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_reserved_characters
             if q_nltk:
                 query = ESCAPE_RE.sub(r'\\\1', q_nltk)
-                query = Q({"bool" : {"must" : {"match" : {"value" : {"query" : query}}}}})
+                if definition_q:
+                    query = Q({"bool":{"must":[{ "match":{"value":query}},{"match":{"tags":"defintion"}}]}})
+                else: query = Q({"bool" : {"must" : {"match" : {"value" : {"query" : query}}}}})
             else:
                 query = ESCAPE_RE.sub(r'\\\1', query)
                 query = Q({"query_string" : {"query" : query}})
