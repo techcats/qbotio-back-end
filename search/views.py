@@ -83,7 +83,7 @@ class SearchView(GenericViewSet):
             if q_nltk:
                 query = ESCAPE_RE.sub(r'\\\1', q_nltk)
                 if definition_q:
-                    query = Q({"bool":{"must":[{ "match":{"value":query}},{"match":{"tags":"defintion"}}]}})
+                    query = Q({"bool":{"must":[{ "match":{"value":q_nltk}},{"match":{"tags":"defintion"}}]}})
                 else: query = Q({"bool" : {"must" : {"match" : {"value" : {"query" : query}}}}})
             else:
                 query = ESCAPE_RE.sub(r'\\\1', query)
@@ -97,6 +97,15 @@ class SearchView(GenericViewSet):
             response = query.execute(ignore_cache=False)
 
             pprint.pprint(query.to_dict()) # debug query
+        
+            #no result return from definition question query, just return the best match
+            if len(response) == 0 and definition_q:
+                pprint.pprint('research')
+                query = Q({"bool" : {"must" : {"match" : {"value" : {"query" : q_nltk}}}}})
+                query = es_search.query(query)[0:10]
+                response = query.execute(ignore_cache=False)
+                pprint.pprint(query.to_dict()) # debug query
+
             return [
                 Result(
                     hit.value,
