@@ -83,7 +83,7 @@ class SearchView(GenericViewSet):
             if q_nltk:
                 query = ESCAPE_RE.sub(r'\\\1', q_nltk)
                 if definition_q:
-                    query = Q({"bool":{"must":[{ "match":{"value":q_nltk}},{"match":{"tags":"defintion"}}]}})
+                    query = Q({"bool":{"must":[{ "match":{"tags":"definition"}},{"match":{"value":q_nltk}}]}})
                 else: query = Q({"bool" : {"must" : {"match" : {"value" : {"query" : query}}}}})
             else:
                 query = ESCAPE_RE.sub(r'\\\1', query)
