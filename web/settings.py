@@ -15,6 +15,7 @@ import sys
 import logging
 import json
 import mongoengine
+import requests
 from resources.circleci.eb.get_eb_env import patch_environment
 
 # Init logger
@@ -53,6 +54,13 @@ SECRET_KEY = JSON_SETTINGS['SECRET_KEY']
 DEBUG = 'PRODUCTION' not in JSON_SETTINGS
 
 ALLOWED_HOSTS = JSON_SETTINGS['ALLOWED_HOSTS']
+
+# Allow AWS EC2 Private IPs
+try:
+    EC2_IP = requests.get('http://169.254.169.254/latest/meta-data/local-ipv4').text
+    ALLOWED_HOSTS.append(EC2_IP)
+except requests.RequestException:
+    pass
 
 # Application definition
 
