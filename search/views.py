@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from search.models import Answer, Result
 from search.serializers import AnswerSerializer, ResultSerializer
-from .apps import es_search
+from .apps import answer_search
 from elasticsearch_dsl.query import Match
 from elasticsearch_dsl import Q
 #from enchant.checker import SpellChecker
@@ -101,7 +101,7 @@ class SearchView(GenericViewSet):
             # https://www.elastic.co/guide/en/elasticsearch/reference/current/full-text-queries.html
 
 
-            query = es_search.query(query)[0:10]
+            query = answer_search.query(query)[0:10]
             response = query.execute(ignore_cache=False)
 
             pprint.pprint(query.to_dict()) # debug query
@@ -110,7 +110,7 @@ class SearchView(GenericViewSet):
             if len(response) == 0 and definition_q:
                 pprint.pprint('research')
                 query = Q({"bool" : {"must" : {"match" : {"value" : {"query" : q_nltk}}}}})
-                query = es_search.query(query)[0:10]
+                query = answer_search.query(query)[0:10]
                 response = query.execute(ignore_cache=False)
                 pprint.pprint(query.to_dict()) # debug query
 
