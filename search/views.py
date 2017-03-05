@@ -7,12 +7,35 @@ from rest_framework_mongoengine.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from search.models import Answer, Result
-from search.serializers import AnswerSerializer, ResultSerializer
-from .apps import answer_search
+from search.models import  Question, QuestionResult, Answer, AnswerResult
+from search.serializers import QuestionSerializer, AnswerSerializer, ResultSerializer
+from .apps import question_search, answer_search
 from elasticsearch_dsl.query import Match
 from elasticsearch_dsl import Q
 #from enchant.checker import SpellChecker
+
+
+class QuestionView(ModelViewSet):
+    """
+    Private API for viewing and updating questions
+    """
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        """
+        Create one or more Questions
+        """
+        data = request.data
+        if isinstance(data, list):
+            serializer = self.get_serializer(data=data, many=True)
+        else:
+            serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class AnswerView(ModelViewSet):
@@ -39,6 +62,29 @@ class AnswerView(ModelViewSet):
 
 
 ESCAPE_RE = re.compile(r'([+-=&|><(){}[\]\^"~\?:\\\/])')
+
+class SuggestView(GenericViewSet):
+    """
+    Public API for suggesting questions
+    """
+    serializer_class = ResultSerializer
+
+    def get_queryset(self):
+        if 'q' in self.request.GET:
+            query = self.request.GET.get('q', '')
+            query = Q({"match_phrase" : {"value" : query}})
+            query = question_search.query(query)[0:5]
+            response = query.execute(ignore_cache=False)
+            return [QuestionResult(hit.value, hit.meta.score) for hit in response]
+        return []
+        
+    def list(self, request):
+        """
+        Returns a list of suggestions from a string query
+        """
+        serializer = self.get_serializer(self.get_queryset(), many=True)
+        return Response(serializer.data)
+
 
 class SearchView(GenericViewSet):
     """
@@ -115,7 +161,7 @@ class SearchView(GenericViewSet):
                 pprint.pprint(query.to_dict()) # debug query
 
             return [
-                Result(
+                AnswerResult(
                     hit.value,
                     hit.source,
                     hit.origin,

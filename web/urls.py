@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from rest_framework_mongoengine import routers
-from search.urls import searchRouter, answerRouter
+from search.urls import searchRouter, apiRouter
 
 class DefaultRouter(routers.DefaultRouter):
     """
@@ -34,7 +34,7 @@ class DefaultRouter(routers.DefaultRouter):
 
 ROUTER = DefaultRouter()
 ROUTER.extend(searchRouter)
-ROUTER.extend(answerRouter)
+ROUTER.extend(apiRouter)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),

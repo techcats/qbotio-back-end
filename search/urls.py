@@ -6,9 +6,11 @@ from . import views
 
 searchRouter = rest_framework.routers.SimpleRouter()
 searchRouter.register(r'search', views.SearchView, base_name='search-list')
+searchRouter.register(r'suggest', views.SuggestView, base_name='suggest-list')
 
-answerRouter = rest_framework_mongoengine.routers.SimpleRouter()
-answerRouter.register(r'answer', views.AnswerView)
+apiRouter = rest_framework_mongoengine.routers.SimpleRouter()
+apiRouter.register(r'question', views.QuestionView)
+apiRouter.register(r'answer', views.AnswerView)
 
 urlpatterns = [
 ]
