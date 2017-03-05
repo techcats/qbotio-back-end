@@ -1,7 +1,3 @@
-dependencies:
-  pre:      
-    - sudo apt-get update
-    - sudo apt-get install python-dev
 deployment:
   production:
     branch: master

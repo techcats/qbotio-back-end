@@ -169,7 +169,7 @@ if ('repository' in JSON_SETTINGS['DATABASES']):
     )
 
 # Configure Server Error reporting (used in production)
-if (PRODUCTION):
+if PRODUCTION and ('SERVER_EMAIL' in PRODUCTION_SETTINGS):
     ADMINS = PRODUCTION_SETTINGS['ADMINS']
     SERVER_EMAIL = PRODUCTION_SETTINGS['SERVER_EMAIL']
     EMAIL_HOST = PRODUCTION_SETTINGS['EMAIL_HOST']
@@ -182,3 +182,34 @@ APPEND_SLASH=False
 
 # Elastic search config
 ELASTICSEARCH = JSON_SETTINGS['ELASTICSEARCH']
+
+# Enable Debug streaming
+# http://stackoverflow.com/questions/238081/how-do-you-log-server-errors-on-django-sites
+if not DEBUG:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'mail_admins': {
+                'class': 'django.utils.log.AdminEmailHandler',
+                'level': 'ERROR',
+                'include_html': True,
+            },
+            'logfile': {
+                'class': 'logging.handlers.WatchedFileHandler',
+                'filename': '/var/log/qbotio-api.log'
+            },
+        },
+        'loggers': {
+            'django.request': {
+                'handlers': ['mail_admins'],
+                'level': 'ERROR',
+                'propagate': True,
+            },
+            'django': {
+                'handlers': ['logfile'],
+                'level': 'ERROR',
+                'propagate': False,
+            },
+        },
+    }
