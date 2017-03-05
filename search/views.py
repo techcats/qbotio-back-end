@@ -1,6 +1,7 @@
 import pprint
 import re
 import nltk
+import string
 #import enchant
 from rest_framework_mongoengine.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import status
@@ -49,23 +50,29 @@ class SearchView(GenericViewSet):
     def get_queryset(self):
         if 'q' in self.request.GET:
             query = self.request.GET.get('q', '')
+            #query = query.lower()
 
             q_nltk = ''
             #d = enchant.Dict('en_US')
             symbol_set = ['?', '.']
+            #question w/ capital, becuase we can't make string to be lower case, because it impact the query. So we need to manually remove question what to wrote with capital letter. In the stopwords contain only lower cases
+            #question_set = ['What', 'How', 'When', 'Do', 'Does', 'Which', 'Why']
+            question_set = ['What'] #this one make overall evaluation result better
 
             size_nltk_q=0
             definition_q=False
             
             if 'passthrough' not in self.request.GET:
-                if 'what' in query: 
+                if 'what' in query or 'What' in query: 
                     definition_q = True
+                
 			
                 tokens = nltk.word_tokenize(query)
-                pprint.pprint(tokens)
+                #pprint.pprint(tokens)
                 stopwords = nltk.corpus.stopwords.words('english')
                 nltk_query = list(set(tokens) - set(stopwords))
                 nltk_query = list(set(nltk_query) - set(symbol_set))
+                #nltk_query = list(set(nltk_query) - set(question_set))
                 size_nltk_q = len(nltk_query) #will use this for weight calculation
                 q_nltk = ' '.join(nltk_query)
                 #spell check
@@ -74,17 +81,18 @@ class SearchView(GenericViewSet):
                 #    pprint.pprint(err.word + "<---- spell error , suggest: ")
                 #    pprint.pprint(d.suggest(err.word))
 
-                pprint.pprint(q_nltk)
-                pprint.pprint(size_nltk_q)
+                #pprint.pprint(q_nltk)
+                #pprint.pprint(size_nltk_q)
 
             #test spell
 
             # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_reserved_characters
             if q_nltk:
                 query = ESCAPE_RE.sub(r'\\\1', q_nltk)
-                if definition_q:
-                    query = Q({"bool":{"must":[{ "match":{"tags":"definition"}},{"match":{"value":q_nltk}}]}})
-                else: query = Q({"bool" : {"must" : {"match" : {"value" : {"query" : query}}}}})
+                #if definition_q:
+                #    query = Q({"bool":{"must":[{ "match":{"tags":"definition"}},{"match":{"value":q_nltk}}]}})
+                #else: 
+                query = Q({"bool" : {"must" : {"match" : {"value" : {"query" : query}}}}})
             else:
                 query = ESCAPE_RE.sub(r'\\\1', query)
                 query = Q({"query_string" : {"query" : query}})
