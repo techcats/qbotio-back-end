@@ -2,7 +2,6 @@ dependencies:
   pre:      
     - sudo apt-get update
     - sudo apt-get install python-dev
-    - sudo python -m pip install -U pip
 deployment:
   production:
     branch: master
@@ -11,15 +10,11 @@ deployment:
       - cp resources/circleci/eb/config.yml .elasticbeanstalk/config.yml
       - mkdir etc
       - cp resources/circleci/settings.json etc/
-      - python manage.py collectstatic --noinput
-      - git add .
       - bash ./resources/circleci/eb/setup.sh
-      - eb deploy --staged
+      - eb deploy
 test:
   override:
     - echo "test"
 machine:
-  pre:
-    - cd /opt/circleci/.pyenv; git pull    
   python:
     version: 3.4.3
