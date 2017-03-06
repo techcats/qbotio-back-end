@@ -72,7 +72,7 @@ class SuggestView(GenericViewSet):
     def get_queryset(self):
         if 'q' in self.request.GET:
             query = self.request.GET.get('q', '')
-            query = Q({"match_phrase" : {"value" : query}})
+            query = Q({"match_phrase_prefix" : {"value" : query}})
             query = question_search.query(query)[0:5]
             response = query.execute(ignore_cache=False)
             return [QuestionResult(hit.value, hit.meta.score) for hit in response]
