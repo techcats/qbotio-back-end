@@ -137,9 +137,9 @@ class SearchView(GenericViewSet):
                 other_list = []
                 
                 for i in range(0,len(tagged)):
-                    if tagged[i][1]=='NN':
+                    if tagged[i][1]=='NN' or tagged[i][1]=='NNS':
                         noun_list.append(tagged[i][0])
-                    elif tagged[i][1]=='JJ':
+                    elif tagged[i][1]=='JJ' or tagged[i][1]=='VBN':
                         adj_list.append(tagged[i][0])
                     else :
                         other_list.append(tagged[i][0])
