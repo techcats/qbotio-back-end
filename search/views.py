@@ -114,13 +114,56 @@ class SearchView(GenericViewSet):
                 
 			
                 tokens = nltk.word_tokenize(query)
+                
+                
+                
                 #pprint.pprint(tokens)
+                
+                
+                #REMOVE UNNECCESSARY WORDS
                 stopwords = nltk.corpus.stopwords.words('english')
-                nltk_query = list(set(tokens) - set(stopwords))
-                nltk_query = list(set(nltk_query) - set(symbol_set))
+                #nltk_query = list(set(tokens) - set(stopwords))
+                #nltk_query = list(set(nltk_query) - set(symbol_set))
+                
+                #q_nltk = ' '.join(nltk_query)
+               
+                
+                #TAG PART OF SPEECH FOR KEY WORDS, The tagger need whole sentence in order to determine type of words
+                tagged = nltk.pos_tag(tokens)
+                pprint.pprint(tagged)
+                
+                adj_list = []
+                noun_list = []
+                other_list = []
+                
+                for i in range(0,len(tagged)):
+                    if tagged[i][1]=='NN':
+                        noun_list.append(tagged[i][0])
+                    elif tagged[i][1]=='JJ':
+                        adj_list.append(tagged[i][0])
+                    else :
+                        other_list.append(tagged[i][0])
+                        
+                pprint.pprint(adj_list)
+                pprint.pprint(noun_list)
+                pprint.pprint(other_list)
+                
+                other_list = list(set(other_list) - set(stopwords))
+                other_list = list(set(other_list) - set(symbol_set))
+                
+                pprint.pprint(other_list)
+                
+                must_m_q = ' '.join(adj_list)
+                should_m_q = noun_list + other_list
+                should_m_q = ' '.join(should_m_q)
+                
+                
+                #for experimental
+                q_nltk = ' '.join([must_m_q, should_m_q])
+                
                 #nltk_query = list(set(nltk_query) - set(question_set))
-                size_nltk_q = len(nltk_query) #will use this for weight calculation
-                q_nltk = ' '.join(nltk_query)
+                #size_nltk_q = len(nltk_query) #will use this for weight calculation
+                
                 #spell check
                 #chkr = SpellChecker("en_US", q_nltk)
                 #for err in chkr:
@@ -135,10 +178,11 @@ class SearchView(GenericViewSet):
             # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_reserved_characters
             if q_nltk:
                 query = ESCAPE_RE.sub(r'\\\1', q_nltk)
-                #if definition_q:
-                #    query = Q({"bool":{"must":[{ "match":{"tags":"definition"}},{"match":{"value":q_nltk}}]}})
-                #else: 
-                query = Q({"bool" : {"must" : {"match" : {"value" : {"query" : query}}}}})
+                if definition_q:
+                    #query = Q({"bool":{"must":[{ "match":{"tags":"definition"}},{"match":{"value":q_nltk}}]}})
+                    query = Q({"bool":{"must":[{ "match":{"tags":"definition"}},{"match":{"value":must_m_q}}], "should" : [{"match" : {"value" : should_m_q}}]}})
+                else: 
+                    query = Q({"bool" : {"must" : {"match" : {"value" : {"query" : query}}}}})
             else:
                 query = ESCAPE_RE.sub(r'\\\1', query)
                 query = Q({"query_string" : {"query" : query}})

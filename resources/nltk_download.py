@@ -19,3 +19,4 @@ if args.dir:
 
 nltk.download(info_or_id='stopwords', download_dir=download_dir)
 nltk.download(info_or_id='punkt', download_dir=download_dir)
+nltk.download(info_or_id='averaged_perceptron_tagger', download_dir=download_dir)
