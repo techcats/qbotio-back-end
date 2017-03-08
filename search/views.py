@@ -150,13 +150,17 @@ class SearchView(GenericViewSet):
                 
                 other_list = list(set(other_list) - set(stopwords))
                 other_list = list(set(other_list) - set(symbol_set))
+                other_list = list(set(other_list) - set(question_set))
                 
                 pprint.pprint(other_list)
                 
-                must_m_q = ' '.join(adj_list)
-                should_m_q = noun_list + other_list
-                should_m_q = ' '.join(should_m_q)
-                
+                if len(adj_list) > 0 :
+                    must_m_q = ' '.join(adj_list)
+                    should_m_q = noun_list + other_list
+                    should_m_q = ' '.join(should_m_q)
+                else :
+                    must_m_q = ' '.join(noun_list)
+                    should_m_q = ' '.join(other_list)
                 
                 #for experimental
                 q_nltk = ' '.join([must_m_q, should_m_q])
