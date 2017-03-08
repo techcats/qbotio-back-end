@@ -8,7 +8,7 @@ deployment:
       - cp resources/circleci/settings.json etc/
       - bash ./resources/circleci/eb/setup.sh
       - eb deploy
-      - tox
+      - tox -e cricleci-eval
       - cat etc/qbotio-resources/etc/nltk_eval.json
       - cat etc/qbotio-resources/etc/passthrough_eval.json
       - cat etc/qbotio-resources/etc/compare_eval.json
@@ -17,7 +17,7 @@ deployment:
       - cat etc/qbotio-resources/etc/filtered_questions.json
 test:
   override:
-    - bash ./resources/circleci/test.sh
+    - echo "test"
 dependencies:
   override:
     - pip install tox tox-pyenv
