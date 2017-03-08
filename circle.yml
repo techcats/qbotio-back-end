@@ -17,7 +17,7 @@ deployment:
       - cat etc/qbotio-resources/etc/filtered_questions.json
 test:
   override:
-    - echo "test"
+    - bash ./resources/circleci/test.sh
 dependencies:
   override:
     - pip install tox tox-pyenv
