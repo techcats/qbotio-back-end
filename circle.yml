@@ -9,7 +9,7 @@ deployment:
       - bash ./resources/circleci/eb/setup.sh
       - eb deploy
       - git clone https://github.com/techcats/qbotio-resources.git etc/qbotio-resources
-      - tox
+      - tox -r
       - cat etc/qbotio-resources/etc/nltk_eval.json
       - cat etc/qbotio-resources/etc/passthrough_eval.json
       - cat etc/qbotio-resources/etc/compare_eval.json
