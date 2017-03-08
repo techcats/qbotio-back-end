@@ -8,6 +8,15 @@ deployment:
       - cp resources/circleci/settings.json etc/
       - bash ./resources/circleci/eb/setup.sh
       - eb deploy
+      - cd etc
+      - bash ./evaluate.sh
+      - cd ..
+      - cat etc/qbotio-resources/etc/nltk_eval.json
+      - cat etc/qbotio-resources/etc/passthrough_eval.json
+      - cat etc/qbotio-resources/etc/compare_eval.json
+      - cat etc/qbotio-resources/etc/compare_negative_eval.json
+      - cat etc/qbotio-resources/etc/compare_positive_eval.json
+      - cat etc/qbotio-resources/etc/filtered_questions.json
 test:
   override:
     - echo "test"
