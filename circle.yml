@@ -9,7 +9,10 @@ deployment:
       - bash ./resources/circleci/eb/setup.sh
       - eb deploy
       - git clone https://github.com/techcats/qbotio-resources.git etc/qbotio-resources
-      - tox
+      - cd etc/qbotio-resources
+      - pip install -r requirements.txt
+      - bash ./eval_suite.sh
+      - cd ../..
       - cat etc/qbotio-resources/etc/nltk_eval.json
       - cat etc/qbotio-resources/etc/passthrough_eval.json
       - cat etc/qbotio-resources/etc/compare_eval.json
@@ -27,4 +30,4 @@ machine:
   pre:
     - cd /opt/circleci/.pyenv; git pull
   python:
-    version: 3.4.3
+    version: 3.6.0
