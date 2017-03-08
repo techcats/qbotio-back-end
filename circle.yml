@@ -23,6 +23,8 @@ test:
   override:
     - echo "test"
 dependencies:
+  pre:
+    - sudo pip install awsebcli
   override:
     - pip install tox tox-pyenv
     - pyenv local 3.6.0
