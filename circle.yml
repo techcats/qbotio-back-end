@@ -8,6 +8,7 @@ deployment:
       - cp resources/circleci/settings.json etc/
       - bash ./resources/circleci/eb/setup.sh
       - eb deploy
+      - git clone https://github.com/techcats/qbotio-resources.git etc/qbotio-resources
       - tox -e cricleci-eval
       - cat etc/qbotio-resources/etc/nltk_eval.json
       - cat etc/qbotio-resources/etc/passthrough_eval.json
