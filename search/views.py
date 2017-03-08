@@ -109,73 +109,71 @@ class SearchView(GenericViewSet):
             definition_q=False
             
             if 'passthrough' not in self.request.GET:
-                if 'what' in query or 'What' in query: 
-                    definition_q = True
                 
-			
+                stopwords = nltk.corpus.stopwords.words('english')
                 tokens = nltk.word_tokenize(query)
                 
+                if 'experimental' in self.request.GET:
                 
-                
-                #pprint.pprint(tokens)
-                
-                
-                #REMOVE UNNECCESSARY WORDS
-                stopwords = nltk.corpus.stopwords.words('english')
-                #nltk_query = list(set(tokens) - set(stopwords))
-                #nltk_query = list(set(nltk_query) - set(symbol_set))
-                
-                #q_nltk = ' '.join(nltk_query)
-               
-                
-                #TAG PART OF SPEECH FOR KEY WORDS, The tagger need whole sentence in order to determine type of words
-                tagged = nltk.pos_tag(tokens)
-                pprint.pprint(tagged)
-                
-                adj_list = []
-                noun_list = []
-                other_list = []
-                
-                for i in range(0,len(tagged)):
-                    if tagged[i][1]=='NN' or tagged[i][1]=='NNS':
-                        noun_list.append(tagged[i][0])
-                    elif tagged[i][1]=='JJ' or tagged[i][1]=='VBN':
-                        adj_list.append(tagged[i][0])
-                    else :
-                        other_list.append(tagged[i][0])
-                        
-                pprint.pprint(adj_list)
-                pprint.pprint(noun_list)
-                pprint.pprint(other_list)
-                
-                other_list = list(set(other_list) - set(stopwords))
-                other_list = list(set(other_list) - set(symbol_set))
-                other_list = list(set(other_list) - set(question_set))
-                
-                pprint.pprint(other_list)
-                
-                if len(adj_list) > 0 :
-                    must_m_q = ' '.join(adj_list)
-                    should_m_q = noun_list + other_list
-                    should_m_q = ' '.join(should_m_q)
-                else :
-                    must_m_q = ' '.join(noun_list)
-                    should_m_q = ' '.join(other_list)
-                
-                #for experimental
-                q_nltk = ' '.join([must_m_q, should_m_q])
-                
-                #nltk_query = list(set(nltk_query) - set(question_set))
-                #size_nltk_q = len(nltk_query) #will use this for weight calculation
-                
-                #spell check
-                #chkr = SpellChecker("en_US", q_nltk)
-                #for err in chkr:
-                #    pprint.pprint(err.word + "<---- spell error , suggest: ")
-                #    pprint.pprint(d.suggest(err.word))
+                    if 'what' in query or 'What' in query: 
+                        definition_q = True
 
-                #pprint.pprint(q_nltk)
-                #pprint.pprint(size_nltk_q)
+                    #TAG PART OF SPEECH FOR KEY WORDS, The tagger need whole sentence in order to determine type of words
+                    tagged = nltk.pos_tag(tokens)
+                    pprint.pprint(tagged)
+
+                    adj_list = []
+                    noun_list = []
+                    other_list = []
+
+                    for i in range(0,len(tagged)):
+                        if tagged[i][1]=='NN' or tagged[i][1]=='NNS':
+                            noun_list.append(tagged[i][0])
+                        elif tagged[i][1]=='JJ' or tagged[i][1]=='VBN':
+                            adj_list.append(tagged[i][0])
+                        else :
+                            other_list.append(tagged[i][0])
+
+                    pprint.pprint(adj_list)
+                    pprint.pprint(noun_list)
+                    pprint.pprint(other_list)
+
+                    other_list = list(set(other_list) - set(stopwords))
+                    other_list = list(set(other_list) - set(symbol_set))
+                    other_list = list(set(other_list) - set(question_set))
+
+                    pprint.pprint(other_list)
+
+                    if len(adj_list) > 0 :
+                        must_m_q = ' '.join(adj_list)
+                        should_m_q = noun_list + other_list
+                        should_m_q = ' '.join(should_m_q)
+                    else :
+                        must_m_q = ' '.join(noun_list)
+                        should_m_q = ' '.join(other_list)
+
+                    #for experimental
+                    q_nltk = ' '.join([must_m_q, should_m_q])
+
+                    #nltk_query = list(set(nltk_query) - set(question_set))
+                    #size_nltk_q = len(nltk_query) #will use this for weight calculation
+
+                    #spell check
+                    #chkr = SpellChecker("en_US", q_nltk)
+                    #for err in chkr:
+                    #    pprint.pprint(err.word + "<---- spell error , suggest: ")
+                    #    pprint.pprint(d.suggest(err.word))
+
+                    #pprint.pprint(q_nltk)
+                    #pprint.pprint(size_nltk_q)
+                else:
+                    #REMOVE UNNECCESSARY WORDS
+                    
+                    nltk_query = list(set(tokens) - set(stopwords))
+                    nltk_query = list(set(nltk_query) - set(symbol_set))
+
+                    q_nltk = ' '.join(nltk_query)
+                    
 
             #test spell
 
