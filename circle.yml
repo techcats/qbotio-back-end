@@ -18,6 +18,12 @@ deployment:
 test:
   override:
     - echo "test"
+dependencies:
+  override:
+    - pip install tox tox-pyenv
+    - pyenv local 3.6.0
 machine:
+  pre:
+    - cd /opt/circleci/.pyenv; git pull
   python:
     version: 3.4.3
