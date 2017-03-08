@@ -10,6 +10,7 @@ deployment:
       - eb deploy
       - git clone https://github.com/techcats/qbotio-resources.git etc/qbotio-resources
       - cd etc/qbotio-resources && pip install -r requirements.txt
+      - sleep 30
       - cd etc/qbotio-resources && ./eval_suite.sh
       - cat etc/qbotio-resources/etc/nltk_eval.json
       - cat etc/qbotio-resources/etc/passthrough_eval.json
