@@ -1,6 +1,7 @@
 appdirs==1.4.0
 astroid==1.4.9
 awsebcli==3.10.0
+blessed==1.14.1
 botocore==1.5.19
 cement==2.8.2
 colorama==0.3.7
@@ -23,6 +24,8 @@ nltk==3.2.2
 numpy==1.12.0
 packaging==16.8
 pathspec==0.5.0
+pluggy==0.4.0
+py==1.4.32
 pylint==1.6.5
 pylint-django==0.7.2
 pylint-plugin-utils==0.2.4
@@ -35,6 +38,9 @@ semantic-version==2.5.0
 six==1.10.0
 tabulate==0.7.5
 termcolor==1.1.0
+tox==2.6.0
 urllib3==1.20
+virtualenv==15.1.0
+wcwidth==0.1.7
 websocket-client==0.40.0
 wrapt==1.10.8

@@ -8,9 +8,7 @@ deployment:
       - cp resources/circleci/settings.json etc/
       - bash ./resources/circleci/eb/setup.sh
       - eb deploy
-      - cd etc
-      - bash ./resources/circleci/evaluate.sh
-      - cd ..
+      - tox
       - cat etc/qbotio-resources/etc/nltk_eval.json
       - cat etc/qbotio-resources/etc/passthrough_eval.json
       - cat etc/qbotio-resources/etc/compare_eval.json
